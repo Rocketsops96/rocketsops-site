@@ -1,0 +1,3084 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VVO - Verkehrssicherheit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #DC143C;
+            --dark-red: #B22222;
+            --light-red: #FF6B6B;
+            --white: #FFFFFF;
+            --light-gray: #F8F8F8;
+            --dark-gray: #1a1a1a;
+            --text-gray: #666666;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Dark theme variables */
+        [data-theme="dark"] {
+            --white: #1a1a1a;
+            --light-gray: #2a2a2a;
+            --dark-gray: #f0f0f0;
+            --text-gray: #b0b0b0;
+            --glass-bg: rgba(26, 26, 26, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] body {
+            background: #1a1a1a;
+            color: var(--dark-gray);
+        }
+
+        [data-theme="dark"] nav {
+            background: rgba(26, 26, 26, 0.8);
+            border-bottom: 1px solid rgba(220, 20, 60, 0.2);
+        }
+
+        [data-theme="dark"] nav.scrolled {
+            background: rgba(26, 26, 26, 0.95);
+        }
+
+        [data-theme="dark"] .nav-links a {
+            color: var(--dark-gray);
+        }
+
+        [data-theme="dark"] section {
+            background: var(--white);
+            color: var(--dark-gray);
+        }
+
+        [data-theme="dark"] .service-card,
+        [data-theme="dark"] .feature-card,
+        [data-theme="dark"] .news-card {
+            background: var(--light-gray);
+            color: var(--dark-gray);
+        }
+
+        [data-theme="dark"] .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
+        }
+
+        [data-theme="dark"] footer {
+            background: #0f0f0f;
+        }
+
+        [data-theme="dark"] .contact-form input,
+        [data-theme="dark"] .contact-form textarea {
+            background: var(--light-gray);
+            color: var(--dark-gray);
+            border-color: rgba(220, 20, 60, 0.3);
+        }
+
+        [data-theme="dark"] .lightbox {
+            background: rgba(0, 0, 0, 0.95);
+        }
+
+        [data-theme="dark"] .news-modal {
+            background: rgba(0, 0, 0, 0.95);
+        }
+
+        [data-theme="dark"] .news-modal-content {
+            background: var(--light-gray);
+            color: var(--dark-gray);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-gray);
+            overflow-x: hidden;
+            background: var(--white);
+            transition: background-color 0.6s ease, color 0.6s ease;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(220, 20, 60, 0.1);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(220, 20, 60, 0.15);
+            padding: 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: padding 0.4s ease;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-red);
+            letter-spacing: 4px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary-red);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .logo:hover {
+            transform: scale(1.1) rotate(-2deg);
+        }
+
+        .logo:hover::after {
+            width: 100%;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 8px 0;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 100%;
+            height: 2px;
+            background: var(--primary-red);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-red);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a:hover::before {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-links a[href="admin.html"] {
+            background: var(--primary-red) !important;
+            color: var(--white) !important;
+            padding: 10px 20px !important;
+            border-radius: 25px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .nav-links a[href="admin.html"]::before {
+            display: none;
+        }
+
+        .nav-links a[href="admin.html"]:hover {
+            background: var(--dark-red) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: relative;
+            width: 70px;
+            height: 35px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 20px;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+            overflow: visible;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            box-shadow: 0 4px 15px rgba(100, 149, 237, 0.3);
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            width: 25px;
+            height: 25px;
+            background: #FFD700;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
+            z-index: 2;
+        }
+
+        [data-theme="dark"] .theme-toggle::before {
+            left: calc(100% - 30px);
+            background: #E6E6FA;
+            box-shadow: 0 2px 10px rgba(230, 230, 250, 0.5);
+        }
+
+        /* Sun animation */
+        .theme-toggle .sun {
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            width: 25px;
+            height: 25px;
+            transform: translateY(-50%);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .theme-toggle .sun::before {
+            content: '☀️';
+            font-size: 20px;
+            display: block;
+            line-height: 1;
+            animation: rotateSun 20s linear infinite;
+        }
+
+        [data-theme="dark"] .theme-toggle .sun {
+            left: calc(100% + 10px);
+            top: 120%;
+            opacity: 0;
+            transform: translateY(-50%) rotate(180deg) scale(0.8);
+        }
+
+        /* Moon animation */
+        .theme-toggle .moon {
+            position: absolute;
+            top: -20px;
+            right: 5px;
+            width: 25px;
+            height: 25px;
+            transform: translateY(-50%) rotate(-180deg);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .theme-toggle .moon::before {
+            content: '🌙';
+            font-size: 20px;
+            display: block;
+            line-height: 1;
+        }
+
+        [data-theme="dark"] .theme-toggle .moon {
+            top: 50%;
+            right: 5px;
+            opacity: 1;
+            transform: translateY(-50%) rotate(0deg);
+        }
+
+        @keyframes rotateSun {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Sky gradient animation */
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(135, 206, 250, 0.3) 0%, 
+                rgba(255, 192, 203, 0.3) 50%, 
+                rgba(255, 165, 0, 0.3) 100%);
+            opacity: 1;
+            transition: opacity 0.6s ease;
+            border-radius: 20px;
+            z-index: 1;
+        }
+
+        [data-theme="dark"] .theme-toggle::after {
+            background: linear-gradient(135deg, 
+                rgba(25, 25, 112, 0.5) 0%, 
+                rgba(72, 61, 139, 0.5) 50%, 
+                rgba(25, 25, 112, 0.5) 100%);
+            opacity: 1;
+        }
+
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        /* Language Switcher */
+        .language-switcher {
+            position: relative;
+            margin-left: 15px;
+        }
+
+        .language-btn {
+            background: rgba(220, 20, 60, 0.1);
+            border: 2px solid var(--primary-red);
+            color: var(--primary-red);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-btn:hover {
+            background: var(--primary-red);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            min-width: 150px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .language-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .language-option {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark-gray);
+        }
+
+        .language-option:hover {
+            background: rgba(220, 20, 60, 0.1);
+            color: var(--primary-red);
+        }
+
+        .language-option.active {
+            background: rgba(220, 20, 60, 0.1);
+            color: var(--primary-red);
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .language-dropdown {
+            background: var(--light-gray);
+        }
+
+        [data-theme="dark"] .language-option {
+            color: var(--dark-gray);
+        }
+
+        [data-theme="dark"] .language-option:hover {
+            background: rgba(220, 20, 60, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 50%, #8B0000 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 2px, transparent 2px);
+            background-size: 60px 60px;
+            animation: movePattern 25s linear infinite;
+            opacity: 0.6;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes movePattern {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            text-align: center;
+            color: var(--white);
+            z-index: 1;
+            animation: heroFadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        @keyframes heroFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hero h1 {
+            font-size: 120px;
+            margin-bottom: 30px;
+            font-weight: 800;
+            letter-spacing: 8px;
+            text-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: pulse 3s ease-in-out infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .hero h1::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 6px;
+            background: var(--white);
+            border-radius: 3px;
+            animation: expandLine 1s ease-out 0.5s both;
+        }
+
+        @keyframes expandLine {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 150px;
+                opacity: 1;
+            }
+        }
+
+        .hero p {
+            font-size: 28px;
+            margin-bottom: 50px;
+            opacity: 0.95;
+            font-weight: 300;
+            letter-spacing: 1px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 20px 50px;
+            background: var(--white);
+            color: var(--primary-red);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--primary-red);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 1;
+            color: var(--primary-red);
+            transition: color 0.3s;
+        }
+
+        .cta-button:hover span {
+            color: var(--white);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-15px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-8px);
+            }
+        }
+
+        .scroll-indicator::before {
+            content: '↓';
+            font-size: 40px;
+            color: var(--white);
+            opacity: 0.8;
+            display: block;
+            animation: fadeInOut 2s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Sections */
+        section {
+            padding: 120px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 56px;
+            margin-bottom: 80px;
+            color: var(--dark-gray);
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+            border-radius: 3px;
+            animation: expandTitleLine 0.8s ease-out;
+        }
+
+        @keyframes expandTitleLine {
+            from {
+                width: 0;
+                opacity: 0;
+            }
+            to {
+                width: 100px;
+                opacity: 1;
+            }
+        }
+
+        /* About Section */
+        .about {
+            background: linear-gradient(180deg, var(--white) 0%, var(--light-gray) 100%);
+            position: relative;
+        }
+
+        .about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-red), transparent);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .about-text {
+            font-size: 19px;
+            line-height: 1.9;
+            color: var(--text-gray);
+        }
+
+        .about-text p {
+            margin-bottom: 25px;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .about-image {
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            height: 450px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(220, 20, 60, 0.3);
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .about-image::before {
+            content: '🚧';
+            font-size: 200px;
+            opacity: 0.15;
+            position: absolute;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .about-image::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+
+        /* Services Section with Tabs */
+        .services {
+            background: var(--white);
+            position: relative;
+        }
+
+        .services-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 15px 35px;
+            background: var(--light-gray);
+            border: 2px solid transparent;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 20, 60, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .tab-button:hover::before {
+            left: 100%;
+        }
+
+        .tab-button.active {
+            background: var(--primary-red);
+            color: var(--white);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.3);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: rgba(220, 20, 60, 0.1);
+            color: var(--primary-red);
+            transform: translateY(-3px);
+        }
+
+        .services-content {
+            display: none;
+        }
+
+        .services-content.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .service-card {
+            background: var(--white);
+            padding: 45px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(220, 20, 60, 0.1);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-red), var(--light-red));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(220, 20, 60, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px) rotate(1deg);
+            box-shadow: 0 20px 60px rgba(220, 20, 60, 0.25);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover::after {
+            opacity: 1;
+        }
+
+        .service-icon {
+            font-size: 64px;
+            margin-bottom: 25px;
+            display: inline-block;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .service-card h3 {
+            font-size: 26px;
+            margin-bottom: 18px;
+            color: var(--dark-gray);
+            font-weight: 700;
+        }
+
+        .service-card p {
+            color: var(--text-gray);
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        /* Features Section */
+        .features {
+            background: linear-gradient(180deg, var(--light-gray) 0%, var(--white) 100%);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 50px 30px;
+            background: var(--white);
+            border-radius: 25px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 50px rgba(220, 20, 60, 0.15);
+        }
+
+        .feature-item:hover::before {
+            opacity: 1;
+        }
+
+        .feature-number {
+            font-size: 80px;
+            font-weight: 800;
+            color: var(--primary-red);
+            margin-bottom: 20px;
+            opacity: 0.15;
+            transition: all 0.4s;
+            line-height: 1;
+        }
+
+        .feature-item:hover .feature-number {
+            opacity: 0.25;
+            transform: scale(1.1);
+        }
+
+        .feature-item h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+            font-weight: 700;
+        }
+
+        .feature-item p {
+            color: var(--text-gray);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 50%, #8B0000 100%);
+            color: var(--white);
+            padding: 100px 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 50px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            font-size: 20px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--light-gray);
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            margin-top: 60px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            padding: 25px;
+            background: var(--white);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.15);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 28px;
+            flex-shrink: 0;
+            transition: transform 0.4s;
+        }
+
+        .contact-item:hover .contact-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .contact-item h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--dark-gray);
+            font-weight: 700;
+        }
+
+        .contact-item p {
+            color: var(--text-gray);
+            font-size: 16px;
+        }
+
+        .contact-form {
+            background: var(--white);
+            padding: 50px;
+            border-radius: 25px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 18px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: inherit;
+            background: var(--light-gray);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            background: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(220, 20, 60, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 140px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            width: 500px;
+            height: 500px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.4);
+        }
+
+        .submit-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            background: var(--white);
+            position: relative;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 60px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.3);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+
+        .gallery-empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-gray);
+            font-size: 18px;
+        }
+
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: var(--white);
+            font-size: 40px;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-prev {
+            left: 30px;
+        }
+
+        .lightbox-next {
+            right: 30px;
+        }
+
+        .lightbox-counter {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--white);
+            font-size: 18px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+
+        /* News Section */
+        .news {
+            background: var(--light-gray);
+            position: relative;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .news-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.2);
+        }
+
+        .news-card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+        }
+
+        .news-card-content {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .news-card-date {
+            color: var(--primary-red);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .news-card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-gray);
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .news-card {
+            cursor: pointer;
+        }
+
+        .news-card-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+        }
+
+        .news-empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-gray);
+            font-size: 18px;
+            grid-column: 1 / -1;
+        }
+
+        .news-load-more-container {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+        }
+
+        .news-load-more-btn {
+            background: var(--primary-red);
+            color: var(--white);
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(220, 20, 60, 0.3);
+        }
+
+        .news-load-more-btn:hover {
+            background: var(--dark-red);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(220, 20, 60, 0.4);
+        }
+
+        .news-load-more-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* News Modal */
+        .news-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s;
+        }
+
+        .news-modal.active {
+            display: block;
+        }
+
+        .news-modal-content {
+            max-width: 900px;
+            margin: 50px auto;
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .news-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            font-size: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .news-modal-close:hover {
+            background: var(--primary-red);
+            color: var(--white);
+            transform: rotate(90deg);
+        }
+
+        .news-modal-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: cover;
+        }
+
+        .news-modal-body {
+            padding: 50px;
+        }
+
+        .news-modal-date {
+            color: var(--primary-red);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .news-modal-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 25px;
+            line-height: 1.3;
+        }
+
+        .news-modal-text {
+            line-height: 1.9;
+            font-size: 18px;
+            color: var(--text-gray);
+        }
+
+        /* Inline styles have highest priority - don't override them */
+        .news-modal-text [style*="color"] {
+            /* Preserve color from inline style */
+        }
+
+        .news-modal-text [style*="background"] {
+            /* Preserve background from inline style */
+        }
+
+        .news-modal-text h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 20px 0 15px 0;
+        }
+
+        .news-modal-text h2:not([style*="color"]) {
+            color: var(--dark-gray);
+        }
+
+        .news-modal-text h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 18px 0 12px 0;
+        }
+
+        .news-modal-text h3:not([style*="color"]) {
+            color: var(--dark-gray);
+        }
+
+        .news-modal-text ul,
+        .news-modal-text ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        .news-modal-text li {
+            margin: 8px 0;
+        }
+
+        .news-modal-text p {
+            margin: 15px 0;
+        }
+
+        .news-modal-text p:not([style*="color"]) {
+            color: var(--text-gray);
+        }
+
+        /* Ensure all inline styles are preserved */
+        .news-modal-text span[style],
+        .news-modal-text div[style],
+        .news-modal-text p[style],
+        .news-modal-text h2[style],
+        .news-modal-text h3[style] {
+            /* Inline styles will override any CSS rules */
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-gray);
+            color: var(--white);
+            text-align: center;
+            padding: 60px 50px;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary-red);
+            margin-bottom: 25px;
+            letter-spacing: 4px;
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        .footer-logo:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .footer-text {
+            opacity: 0.8;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible,
+        .fade-in-left.visible,
+        .fade-in-right.visible {
+            opacity: 1;
+            transform: translate(0);
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-25px) rotate(5deg);
+            }
+        }
+
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 60px;
+            }
+
+            .hero p {
+                font-size: 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .about-content,
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 40px;
+            }
+
+            section {
+                padding: 80px 30px;
+            }
+
+            .services-tabs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .tab-button {
+                width: 100%;
+            }
+
+            .theme-toggle-container {
+                margin-left: 10px;
+            }
+
+            .theme-toggle {
+                width: 60px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">VVO</a>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <ul class="nav-links">
+                    <li><a href="#about">Über uns</a></li>
+                    <li><a href="#services">Leistungen</a></li>
+                    <li><a href="#features">Vorteile</a></li>
+                    <li><a href="#gallery">Galerie</a></li>
+                    <li><a href="#news">Neuigkeiten</a></li>
+                    <li><a href="#contact">Kontakt</a></li>
+                    <li><a href="admin.html">Login</a></li>
+                </ul>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="language-switcher">
+                        <button class="language-btn" id="languageBtn">
+                            <span id="currentLang">DE</span>
+                            <span>▼</span>
+                        </button>
+                        <div class="language-dropdown" id="languageDropdown">
+                            <div class="language-option active" data-lang="de">
+                                <span>🇩🇪</span>
+                                <span>Deutsch</span>
+                            </div>
+                            <div class="language-option" data-lang="en">
+                                <span>🇬🇧</span>
+                                <span>English</span>
+                            </div>
+                            <div class="language-option" data-lang="ru">
+                                <span>🇷🇺</span>
+                                <span>Русский</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="theme-toggle-container">
+                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                            <span class="sun"></span>
+                            <span class="moon"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>VVO</h1>
+            <p data-translate="hero.subtitle">Verkehrssicherheit ist unsere Priorität</p>
+            <a href="#contact" class="cta-button"><span data-translate="hero.cta">Kontakt aufnehmen</span></a>
+        </div>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <h2 class="section-title fade-in">Über das Unternehmen</h2>
+        <div class="about-content">
+            <div class="about-text fade-in-left">
+                <p>VVO ist ein führendes Bauunternehmen, das sich auf Verkehrssicherheit spezialisiert hat. Wir schaffen sichere Infrastruktur für alle Verkehrsteilnehmer durch den Einsatz modernster Technologien und bewährter Lösungen.</p>
+                <p>Unser Team von Profis mit langjähriger Erfahrung garantiert höchste Qualität bei allen Projekten. Wir streben nach Perfektion in jedem Projekt und gewährleisten vollständige Übereinstimmung mit allen Sicherheitsnormen und -standards.</p>
+            </div>
+            <div class="about-image fade-in-right floating">
+                <div style="z-index: 1; position: relative;">
+                    <h3 style="font-size: 36px; margin-bottom: 20px; font-weight: 700;">Sicherheit</h3>
+                    <p style="font-size: 20px; opacity: 0.95;">Qualität • Zuverlässigkeit • Professionalität</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section with Tabs -->
+    <section id="services" class="services">
+        <h2 class="section-title fade-in">Unsere Leistungen</h2>
+        <div class="services-tabs">
+            <button class="tab-button active" data-tab="infrastructure">Infrastruktur</button>
+            <button class="tab-button" data-tab="safety">Sicherheit</button>
+            <button class="tab-button" data-tab="maintenance">Wartung</button>
+        </div>
+        
+        <div class="services-content active" id="infrastructure">
+            <div class="service-card fade-in">
+                <div class="service-icon">🛣️</div>
+                <h3>Straßenplanung</h3>
+                <p>Entwicklung von Projektdokumentationen für den Bau und die Rekonstruktion von Straßen unter Berücksichtigung aller Sicherheitsanforderungen.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">💡</div>
+                <h3>Beleuchtung</h3>
+                <p>Planung und Installation von Straßenbeleuchtungssystemen mit LED-Technologie.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">🚧</div>
+                <h3>Schutzplanken</h3>
+                <p>Installation von Schutzplanken und Barrieren zur Gewährleistung der Sicherheit auf Straßen und Brücken.</p>
+            </div>
+        </div>
+
+        <div class="services-content" id="safety">
+            <div class="service-card fade-in">
+                <div class="service-icon">🚦</div>
+                <h3>Ampelinstallation</h3>
+                <p>Montage und Einstellung moderner Ampelsysteme mit energieeffizienten Technologien.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">⚠️</div>
+                <h3>Straßenmarkierung</h3>
+                <p>Auftrag hochwertiger Straßenmarkierungen mit modernen, besonders verschleißfesten Materialien.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">🛑</div>
+                <h3>Verkehrsschilder</h3>
+                <p>Herstellung und Installation von Verkehrsschildern nach DIN-Normen für maximale Sichtbarkeit.</p>
+            </div>
+        </div>
+
+        <div class="services-content" id="maintenance">
+            <div class="service-card fade-in">
+                <div class="service-icon">🔧</div>
+                <h3>Technische Wartung</h3>
+                <p>Regelmäßige Wartung und Reparatur der Straßeninfrastruktur zur Gewährleistung der kontinuierlichen Funktionsfähigkeit.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">📊</div>
+                <h3>Monitoring und Kontrolle</h3>
+                <p>Überwachungssysteme für den Zustand der Straßeninfrastruktur und die Verkehrssicherheitskontrolle.</p>
+            </div>
+            <div class="service-card fade-in">
+                <div class="service-icon">🔄</div>
+                <h3>Modernisierung</h3>
+                <p>Aktualisierung und Modernisierung bestehender Straßeninfrastrukturobjekte mit neuen Technologien.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <h2 class="section-title fade-in">Warum uns wählen</h2>
+        <div class="features-grid">
+            <div class="feature-item fade-in">
+                <div class="feature-number">01</div>
+                <h3>Erfahrung</h3>
+                <p>Über 15 Jahre am Markt für Straßenbau</p>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-number">02</div>
+                <h3>Qualität</h3>
+                <p>Strikte Einhaltung aller Standards und Normen</p>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-number">03</div>
+                <h3>Moderne Technologien</h3>
+                <p>Einsatz innovativer Lösungen und Materialien</p>
+            </div>
+            <div class="feature-item fade-in">
+                <div class="feature-number">04</div>
+                <h3>Garantien</h3>
+                <p>Vollständige Garantie auf alle durchgeführten Arbeiten</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="500">0</div>
+                <div class="stat-label">Abgeschlossene Projekte</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="15">0</div>
+                <div class="stat-label">Jahre Erfahrung</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="200">0</div>
+                <div class="stat-label">Spezialisten</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="98">0</div>
+                <div class="stat-label">% zufriedene Kunden</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <h2 class="section-title fade-in">Kontaktieren Sie uns</h2>
+        <p class="contact-subtitle fade-in" style="text-align: center; color: var(--text-gray); margin-top: 20px; font-size: 18px;">Haben Sie Fragen? Wir sind hier, um zu helfen!</p>
+        <div class="contact-content">
+            <div class="contact-info fade-in-left">
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div>
+                        <h3>Adresse</h3>
+                        <p>Musterstraße 123, 12345 Musterstadt</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <div>
+                        <h3>Telefon</h3>
+                        <p>+49 (0) 123 456 789</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">✉️</div>
+                    <div>
+                        <h3>Email</h3>
+                        <p>info@vvo.de</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">🕒</div>
+                    <div>
+                        <h3>Öffnungszeiten</h3>
+                        <p>Mo-Fr: 9:00 - 18:00</p>
+                    </div>
+                </div>
+            </div>
+            <form class="contact-form fade-in-right">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefon:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-Mail:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Nachricht:</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn"><span>Senden</span></button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <h2 class="section-title fade-in">Galerie</h2>
+        <div class="gallery-grid" id="galleryGrid">
+            <div class="gallery-empty" id="galleryEmpty">
+                <p>Noch keine Bilder vorhanden. Bitte melden Sie sich im Admin-Bereich an, um Bilder hochzuladen.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section id="news" class="news">
+        <h2 class="section-title fade-in">Neuigkeiten</h2>
+        <div class="news-grid" id="newsGrid">
+            <div class="news-empty" id="newsEmpty">
+                <p>Noch keine Neuigkeiten vorhanden.</p>
+            </div>
+        </div>
+        <div class="news-load-more-container" id="newsLoadMoreContainer" style="display: none;">
+            <button class="news-load-more-btn" id="newsLoadMoreBtn">Mehr anzeigen</button>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">×</button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev">‹</button>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext">›</button>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="Gallery Image">
+        </div>
+        <div class="lightbox-counter" id="lightboxCounter"></div>
+    </div>
+
+    <!-- News Modal -->
+    <div class="news-modal" id="newsModal">
+        <div class="news-modal-content">
+            <button class="news-modal-close" id="newsModalClose">×</button>
+            <img id="newsModalImage" class="news-modal-image" src="" alt="News Image" style="display: none;">
+            <div class="news-modal-body">
+                <div class="news-modal-date" id="newsModalDate"></div>
+                <h2 class="news-modal-title" id="newsModalTitle"></h2>
+                <div class="news-modal-text" id="newsModalText"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">VVO</div>
+            <p class="footer-text">Verkehrssicherheit ist unsere Mission</p>
+            <p class="footer-text">&copy; 2024 VVO. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.services-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+                
+                // Re-trigger fade-in animations for new content
+                document.getElementById(targetTab).querySelectorAll('.fade-in').forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(40px)';
+                    setTimeout(() => {
+                        el.style.opacity = '1';
+                        el.style.transform = 'translateY(0)';
+                    }, 100);
+                });
+            });
+        });
+
+        // Enhanced fade in animations on scroll
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -80px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in, .fade-in-left, .fade-in-right').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Counter animation with delay
+        const animateCounter = (element) => {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2500;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = Math.floor(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target;
+                }
+            };
+
+            updateCounter();
+        };
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        const counter = entry.target.querySelector('.stat-number');
+                        if (counter && !counter.classList.contains('counted')) {
+                            counter.classList.add('counted');
+                            animateCounter(counter);
+                        }
+                    }, index * 200);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-item').forEach(item => {
+            statsObserver.observe(item);
+        });
+
+        // Form submission with animation
+        document.querySelector('.contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const button = form.querySelector('.submit-btn');
+            
+            // Get form data
+            const formData = {
+                id: Date.now().toString(),
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                date: new Date().toISOString(),
+                status: 'new' // new, completed
+            };
+            
+            // Save to localStorage
+            const contacts = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+            contacts.unshift(formData); // Add to beginning
+            localStorage.setItem('contactMessages', JSON.stringify(contacts));
+            
+            // Trigger event for admin panel
+            window.dispatchEvent(new Event('contactMessagesUpdated'));
+            
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = '';
+                const t = translations[currentLanguage] || translations.de;
+                alert(t.contact.success);
+                form.reset();
+            }, 200);
+        });
+
+        // Parallax effect for hero
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+
+        // Add stagger animation to service cards
+        const serviceObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            serviceObserver.observe(card);
+        });
+
+        // Mouse move parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.service-card, .feature-item');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const moveX = (x - centerX) / 20;
+                    const moveY = (y - centerY) / 20;
+                    card.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                }
+            });
+        });
+
+        // Reset card transforms on mouse leave
+        document.querySelectorAll('.service-card, .feature-item').forEach(card => {
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+            });
+        });
+
+        // Lightbox functionality
+        let currentImageIndex = 0;
+        let galleryImages = [];
+
+        function openLightbox(index) {
+            currentImageIndex = index;
+            galleryImages = JSON.parse(localStorage.getItem('galleryImages') || '[]');
+            if (galleryImages.length === 0) return;
+
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxCounter = document.getElementById('lightboxCounter');
+
+            lightboxImage.src = galleryImages[currentImageIndex];
+            lightboxCounter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function showNextImage() {
+            if (galleryImages.length === 0) return;
+            currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+            document.getElementById('lightboxImage').src = galleryImages[currentImageIndex];
+            document.getElementById('lightboxCounter').textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+        }
+
+        function showPrevImage() {
+            if (galleryImages.length === 0) return;
+            currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+            document.getElementById('lightboxImage').src = galleryImages[currentImageIndex];
+            document.getElementById('lightboxCounter').textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+        }
+
+        // Lightbox event listeners
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        document.getElementById('lightboxNext').addEventListener('click', showNextImage);
+        document.getElementById('lightboxPrev').addEventListener('click', showPrevImage);
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') {
+                closeLightbox();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const lightbox = document.getElementById('lightbox');
+            if (!lightbox.classList.contains('active')) return;
+
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') showNextImage();
+            if (e.key === 'ArrowLeft') showPrevImage();
+        });
+
+        // Load gallery from localStorage
+        function loadGallery() {
+            const galleryGrid = document.getElementById('galleryGrid');
+            const galleryEmpty = document.getElementById('galleryEmpty');
+            galleryImages = JSON.parse(localStorage.getItem('galleryImages') || '[]');
+
+            if (galleryImages.length === 0) {
+                galleryEmpty.style.display = 'block';
+                return;
+            }
+
+            galleryEmpty.style.display = 'none';
+            galleryGrid.innerHTML = '';
+
+            galleryImages.forEach((imageData, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item fade-in';
+                galleryItem.innerHTML = `<img src="${imageData}" alt="Gallery Image ${index + 1}">`;
+                galleryItem.addEventListener('click', () => openLightbox(index));
+                galleryGrid.appendChild(galleryItem);
+            });
+
+            // Observe new gallery items
+            document.querySelectorAll('.gallery-item').forEach(item => {
+                observer.observe(item);
+            });
+        }
+
+        // Open news modal
+        function openNewsModal(newsItem) {
+            const modal = document.getElementById('newsModal');
+            const modalImage = document.getElementById('newsModalImage');
+            const modalDate = document.getElementById('newsModalDate');
+            const modalTitle = document.getElementById('newsModalTitle');
+            const modalText = document.getElementById('newsModalText');
+
+            const date = new Date(newsItem.date).toLocaleDateString('de-DE', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            modalDate.textContent = date;
+            modalTitle.textContent = newsItem.title;
+            // Display HTML content if available, otherwise plain text
+            // Priority: html first (formatted), then text (plain)
+            if (newsItem.html) {
+                modalText.innerHTML = newsItem.html;
+            } else if (newsItem.text) {
+                // Convert plain text to HTML with line breaks
+                modalText.innerHTML = newsItem.text.replace(/\n/g, '<br>');
+            } else {
+                modalText.innerHTML = '';
+            }
+
+            if (newsItem.image) {
+                modalImage.src = newsItem.image;
+                modalImage.style.display = 'block';
+            } else {
+                modalImage.style.display = 'none';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close news modal
+        function closeNewsModal() {
+            const modal = document.getElementById('newsModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // News modal event listeners
+        document.getElementById('newsModalClose').addEventListener('click', closeNewsModal);
+        document.getElementById('newsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'newsModal') {
+                closeNewsModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const newsModal = document.getElementById('newsModal');
+                if (newsModal.classList.contains('active')) {
+                    closeNewsModal();
+                }
+            }
+        });
+
+        // News pagination variables
+        let displayedNewsCount = 0;
+        let allNews = [];
+        const NEWS_PER_PAGE = 5;
+
+        // Load news from localStorage
+        function loadNews() {
+            const newsGrid = document.getElementById('newsGrid');
+            const newsEmpty = document.getElementById('newsEmpty');
+            const newsLoadMoreContainer = document.getElementById('newsLoadMoreContainer');
+            const news = JSON.parse(localStorage.getItem('news') || '[]');
+
+            if (news.length === 0) {
+                newsEmpty.style.display = 'block';
+                newsLoadMoreContainer.style.display = 'none';
+                return;
+            }
+
+            newsEmpty.style.display = 'none';
+            newsGrid.innerHTML = '';
+            displayedNewsCount = 0;
+
+            // Sort news by date (newest first)
+            allNews = news.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            // Load first batch
+            loadMoreNews();
+        }
+
+        // Load more news items
+        function loadMoreNews() {
+            const newsGrid = document.getElementById('newsGrid');
+            const newsLoadMoreContainer = document.getElementById('newsLoadMoreContainer');
+            const newsLoadMoreBtn = document.getElementById('newsLoadMoreBtn');
+
+            const startIndex = displayedNewsCount;
+            const endIndex = Math.min(startIndex + NEWS_PER_PAGE, allNews.length);
+            const newsToShow = allNews.slice(startIndex, endIndex);
+
+            newsToShow.forEach((item) => {
+                const newsCard = document.createElement('div');
+                newsCard.className = 'news-card fade-in';
+                const date = new Date(item.date).toLocaleDateString('de-DE', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                newsCard.innerHTML = `
+                    ${item.image ? `<img src="${item.image}" alt="${item.title}" class="news-card-image">` : '<div class="news-card-image"></div>'}
+                    <div class="news-card-content">
+                        <div class="news-card-date">${date}</div>
+                        <h3 class="news-card-title">${item.title}</h3>
+                    </div>
+                `;
+                newsCard.addEventListener('click', () => openNewsModal(item));
+                newsGrid.appendChild(newsCard);
+            });
+
+            displayedNewsCount = endIndex;
+
+            // Show/hide "Load More" button
+            if (displayedNewsCount >= allNews.length) {
+                newsLoadMoreContainer.style.display = 'none';
+            } else {
+                newsLoadMoreContainer.style.display = 'block';
+            }
+
+            // Observe only newly added news items
+            const allCards = document.querySelectorAll('.news-card');
+            const newCards = Array.from(allCards).slice(-newsToShow.length);
+            newCards.forEach(item => {
+                if (!item.dataset.observed) {
+                    observer.observe(item);
+                    item.dataset.observed = 'true';
+                }
+            });
+        }
+
+        // Load gallery and news on page load
+        loadGallery();
+        loadNews();
+
+        // Load more button event listener (after DOM is ready)
+        document.addEventListener('DOMContentLoaded', () => {
+            const newsLoadMoreBtn = document.getElementById('newsLoadMoreBtn');
+            if (newsLoadMoreBtn) {
+                newsLoadMoreBtn.addEventListener('click', loadMoreNews);
+            }
+        });
+
+        // Also set up listener immediately if element exists
+        const newsLoadMoreBtn = document.getElementById('newsLoadMoreBtn');
+        if (newsLoadMoreBtn) {
+            newsLoadMoreBtn.addEventListener('click', loadMoreNews);
+        }
+
+        // Listen for storage changes (when admin uploads new images or news)
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'galleryImages') {
+                loadGallery();
+            }
+            if (e.key === 'news') {
+                loadNews();
+            }
+            if (e.key === 'contactMessages') {
+                // Messages updated in admin panel
+            }
+        });
+
+        // Also listen for custom events (for same-tab updates)
+        window.addEventListener('galleryUpdated', () => {
+            loadGallery();
+        });
+
+        window.addEventListener('newsUpdated', () => {
+            loadNews();
+        });
+
+        // Sections Order Management
+        const sectionsConfig = {
+            'about': { navTitle: 'Über uns' },
+            'services': { navTitle: 'Leistungen' },
+            'features': { navTitle: 'Vorteile' },
+            'gallery': { navTitle: 'Galerie' },
+            'news': { navTitle: 'Neuigkeiten' },
+            'contact': { navTitle: 'Kontakt' }
+        };
+
+        function getSectionsOrder() {
+            const saved = localStorage.getItem('sectionsOrder');
+            if (saved) {
+                try {
+                    const order = JSON.parse(saved);
+                    // Validate order
+                    const savedIds = order.map(s => s.id);
+                    const allIds = Object.keys(sectionsConfig);
+                    if (savedIds.length === allIds.length && allIds.every(id => savedIds.includes(id))) {
+                        return order;
+                    }
+                } catch (e) {
+                    console.error('Error parsing sections order:', e);
+                }
+            }
+            // Default order
+            return [
+                { id: 'about', navTitle: 'Über uns' },
+                { id: 'services', navTitle: 'Leistungen' },
+                { id: 'features', navTitle: 'Vorteile' },
+                { id: 'gallery', navTitle: 'Galerie' },
+                { id: 'news', navTitle: 'Neuigkeiten' },
+                { id: 'contact', navTitle: 'Kontakt' }
+            ];
+        }
+
+        function reorderSections() {
+            const order = getSectionsOrder();
+            const heroSection = document.querySelector('.hero');
+            if (!heroSection) return;
+            
+            // Get all sections in the order they should appear
+            const sections = order.map(s => {
+                const section = document.getElementById(s.id);
+                return section;
+            }).filter(s => s !== null);
+            
+            // Find the parent container (usually body)
+            const parent = heroSection.parentNode;
+            if (!parent) return;
+            
+            // Find where to insert (after hero section)
+            let insertAfter = heroSection;
+            
+            // Remove all sections from DOM first
+            sections.forEach(section => {
+                if (section && section.parentNode) {
+                    section.parentNode.removeChild(section);
+                }
+            });
+
+            // Re-append sections in new order (after hero)
+            sections.forEach(section => {
+                if (section && insertAfter && insertAfter.nextSibling) {
+                    parent.insertBefore(section, insertAfter.nextSibling);
+                } else if (section && insertAfter) {
+                    parent.appendChild(section);
+                }
+                insertAfter = section;
+            });
+        }
+
+        function updateNavigation() {
+            const order = getSectionsOrder();
+            const navLinks = document.querySelector('.nav-links');
+            const loginLi = Array.from(navLinks.querySelectorAll('li')).find(li => 
+                li.querySelector('a[href="admin.html"]')
+            );
+            
+            // Remove all navigation links except login
+            const allLis = Array.from(navLinks.querySelectorAll('li'));
+            allLis.forEach(li => {
+                if (!li.querySelector('a[href="admin.html"]')) {
+                    li.remove();
+                }
+            });
+
+            // Add links in new order (before login)
+            order.forEach(section => {
+                const config = sectionsConfig[section.id];
+                if (config) {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = `#${section.id}`;
+                    a.textContent = config.navTitle;
+                    li.appendChild(a);
+                    if (loginLi) {
+                        navLinks.insertBefore(li, loginLi);
+                    } else {
+                        navLinks.appendChild(li);
+                    }
+                }
+            });
+        }
+
+        // Apply order on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            reorderSections();
+            updateNavigation();
+        });
+
+        // Listen for order updates
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'sectionsOrder') {
+                reorderSections();
+                updateNavigation();
+            }
+        });
+
+        window.addEventListener('sectionsOrderUpdated', () => {
+            reorderSections();
+            updateNavigation();
+        });
+
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Load saved theme or default to light
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            html.setAttribute('data-theme', savedTheme);
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Initialize theme on page load
+        loadTheme();
+
+        // Add click event to toggle button
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // Listen for theme changes in other tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'theme') {
+                html.setAttribute('data-theme', e.newValue || 'light');
+            }
+        });
+
+        // Language Translation System
+        const translations = {
+            de: {
+                nav: {
+                    about: 'Über uns',
+                    services: 'Leistungen',
+                    features: 'Vorteile',
+                    gallery: 'Galerie',
+                    news: 'Neuigkeiten',
+                    contact: 'Kontakt',
+                    login: 'Login'
+                },
+                hero: {
+                    subtitle: 'Verkehrssicherheit ist unsere Priorität',
+                    cta: 'Kontakt aufnehmen'
+                },
+                about: {
+                    title: 'Über das Unternehmen',
+                    text1: 'VVO ist ein führendes Bauunternehmen, das sich auf Verkehrssicherheit spezialisiert hat. Wir schaffen sichere Infrastruktur für alle Verkehrsteilnehmer durch den Einsatz modernster Technologien und bewährter Lösungen.',
+                    text2: 'Unser Team von Profis mit langjähriger Erfahrung garantiert höchste Qualität bei allen Projekten. Wir streben nach Perfektion in jedem Projekt und gewährleisten vollständige Übereinstimmung mit allen Sicherheitsnormen und -standards.',
+                    safety: 'Sicherheit',
+                    quality: 'Qualität • Zuverlässigkeit • Professionalität'
+                },
+                services: {
+                    title: 'Unsere Leistungen',
+                    infrastructure: 'Infrastruktur',
+                    safety: 'Sicherheit',
+                    maintenance: 'Wartung',
+                    roadPlanning: { title: 'Straßenplanung', desc: 'Entwicklung von Projektdokumentationen für den Bau und die Rekonstruktion von Straßen unter Berücksichtigung aller Sicherheitsanforderungen.' },
+                    lighting: { title: 'Beleuchtung', desc: 'Planung und Installation von Straßenbeleuchtungssystemen mit LED-Technologie.' },
+                    barriers: { title: 'Schutzplanken', desc: 'Installation von Schutzplanken und Barrieren zur Gewährleistung der Sicherheit auf Straßen und Brücken.' },
+                    trafficLights: { title: 'Ampelinstallation', desc: 'Montage und Einstellung moderner Ampelsysteme mit energieeffizienten Technologien.' },
+                    roadMarking: { title: 'Straßenmarkierung', desc: 'Auftrag hochwertiger Straßenmarkierungen mit modernen, besonders verschleißfesten Materialien.' },
+                    signs: { title: 'Verkehrsschilder', desc: 'Herstellung und Installation von Verkehrsschildern nach DIN-Normen für maximale Sichtbarkeit.' },
+                    maintenance: { title: 'Technische Wartung', desc: 'Regelmäßige Wartung und Reparatur der Straßeninfrastruktur zur Gewährleistung der kontinuierlichen Funktionsfähigkeit.' },
+                    monitoring: { title: 'Monitoring und Kontrolle', desc: 'Überwachungssysteme für den Zustand der Straßeninfrastruktur und die Verkehrssicherheitskontrolle.' },
+                    modernization: { title: 'Modernisierung', desc: 'Aktualisierung und Modernisierung bestehender Straßeninfrastrukturobjekte mit neuen Technologien.' }
+                },
+                features: {
+                    title: 'Warum uns wählen',
+                    experience: { title: 'Erfahrung', desc: 'Über 15 Jahre am Markt für Straßenbau' },
+                    quality: { title: 'Qualität', desc: 'Strikte Einhaltung aller Standards und Normen' },
+                    technologies: { title: 'Moderne Technologien', desc: 'Einsatz innovativer Lösungen und Materialien' },
+                    team: { title: 'Professionelles Team', desc: 'Qualifizierte Spezialisten mit langjähriger Erfahrung' },
+                    guarantee: { title: 'Garantie', desc: 'Volle Garantie für alle durchgeführten Arbeiten' },
+                    support: { title: 'Support', desc: 'Rund um die Uhr technischer Support' }
+                },
+                gallery: {
+                    title: 'Unsere Galerie',
+                    empty: 'Noch keine Bilder vorhanden'
+                },
+                news: {
+                    title: 'Neuigkeiten',
+                    empty: 'Noch keine Neuigkeiten vorhanden.',
+                    loadMore: 'Mehr anzeigen'
+                },
+                contact: {
+                    title: 'Kontaktieren Sie uns',
+                    subtitle: 'Haben Sie Fragen? Wir sind hier, um zu helfen!',
+                    name: 'Name',
+                    phone: 'Telefon',
+                    email: 'E-Mail',
+                    message: 'Nachricht',
+                    send: 'Senden',
+                    success: 'Vielen Dank für Ihre Nachricht! Wir werden uns in Kürze bei Ihnen melden.'
+                },
+                footer: {
+                    text: 'Verkehrssicherheit ist unsere Mission',
+                    copyright: 'Alle Rechte vorbehalten.'
+                }
+            },
+            en: {
+                nav: {
+                    about: 'About Us',
+                    services: 'Services',
+                    features: 'Advantages',
+                    gallery: 'Gallery',
+                    news: 'News',
+                    contact: 'Contact',
+                    login: 'Login'
+                },
+                hero: {
+                    subtitle: 'Road Safety is Our Priority',
+                    cta: 'Contact Us'
+                },
+                about: {
+                    title: 'About the Company',
+                    text1: 'VVO is a leading construction company specializing in road safety. We create safe infrastructure for all road users through the use of cutting-edge technologies and proven solutions.',
+                    text2: 'Our team of professionals with years of experience guarantees the highest quality in all projects. We strive for perfection in every project and ensure full compliance with all safety standards and regulations.',
+                    safety: 'Safety',
+                    quality: 'Quality • Reliability • Professionalism'
+                },
+                services: {
+                    title: 'Our Services',
+                    infrastructure: 'Infrastructure',
+                    safety: 'Safety',
+                    maintenance: 'Maintenance',
+                    roadPlanning: { title: 'Road Planning', desc: 'Development of project documentation for the construction and reconstruction of roads, taking into account all safety requirements.' },
+                    lighting: { title: 'Lighting', desc: 'Planning and installation of street lighting systems with LED technology.' },
+                    barriers: { title: 'Guardrails', desc: 'Installation of guardrails and barriers to ensure safety on roads and bridges.' },
+                    trafficLights: { title: 'Traffic Lights', desc: 'Installation and adjustment of modern traffic light systems with energy-efficient technologies.' },
+                    roadMarking: { title: 'Road Marking', desc: 'Application of high-quality road markings with modern, highly wear-resistant materials.' },
+                    signs: { title: 'Traffic Signs', desc: 'Manufacturing and installation of traffic signs according to DIN standards for maximum visibility.' },
+                    maintenance: { title: 'Technical Maintenance', desc: 'Regular maintenance and repair of road infrastructure to ensure continuous functionality.' },
+                    monitoring: { title: 'Monitoring and Control', desc: 'Monitoring systems for the condition of road infrastructure and traffic safety control.' },
+                    modernization: { title: 'Modernization', desc: 'Updating and modernization of existing road infrastructure facilities with new technologies.' }
+                },
+                features: {
+                    title: 'Why Choose Us',
+                    experience: { title: 'Experience', desc: 'Over 15 years in the road construction market' },
+                    quality: { title: 'Quality', desc: 'Strict compliance with all standards and regulations' },
+                    technologies: { title: 'Modern Technologies', desc: 'Use of innovative solutions and materials' },
+                    team: { title: 'Professional Team', desc: 'Qualified specialists with years of experience' },
+                    guarantee: { title: 'Guarantee', desc: 'Full guarantee for all work performed' },
+                    support: { title: 'Support', desc: '24/7 technical support' }
+                },
+                gallery: {
+                    title: 'Our Gallery',
+                    empty: 'No images available yet'
+                },
+                news: {
+                    title: 'News',
+                    empty: 'No news available yet.',
+                    loadMore: 'Load More'
+                },
+                contact: {
+                    title: 'Contact Us',
+                    subtitle: 'Have questions? We are here to help!',
+                    name: 'Name',
+                    phone: 'Phone',
+                    email: 'Email',
+                    message: 'Message',
+                    send: 'Send',
+                    success: 'Thank you for your message! We will contact you shortly.'
+                },
+                footer: {
+                    text: 'Road Safety is Our Mission',
+                    copyright: 'All rights reserved.'
+                }
+            },
+            ru: {
+                nav: {
+                    about: 'О нас',
+                    services: 'Услуги',
+                    features: 'Преимущества',
+                    gallery: 'Галерея',
+                    news: 'Новости',
+                    contact: 'Контакты',
+                    login: 'Вход'
+                },
+                hero: {
+                    subtitle: 'Безопасность дорожного движения - наш приоритет',
+                    cta: 'Связаться с нами'
+                },
+                about: {
+                    title: 'О компании',
+                    text1: 'VVO - ведущая строительная компания, специализирующаяся на безопасности дорожного движения. Мы создаем безопасную инфраструктуру для всех участников дорожного движения, используя передовые технологии и проверенные решения.',
+                    text2: 'Наша команда профессионалов с многолетним опытом гарантирует высочайшее качество во всех проектах. Мы стремимся к совершенству в каждом проекте и обеспечиваем полное соответствие всем нормам и стандартам безопасности.',
+                    safety: 'Безопасность',
+                    quality: 'Качество • Надежность • Профессионализм'
+                },
+                services: {
+                    title: 'Наши услуги',
+                    infrastructure: 'Инфраструктура',
+                    safety: 'Безопасность',
+                    maintenance: 'Обслуживание',
+                    roadPlanning: { title: 'Планирование дорог', desc: 'Разработка проектной документации для строительства и реконструкции дорог с учетом всех требований безопасности.' },
+                    lighting: { title: 'Освещение', desc: 'Планирование и установка систем уличного освещения с LED-технологией.' },
+                    barriers: { title: 'Ограждения', desc: 'Установка ограждений и барьеров для обеспечения безопасности на дорогах и мостах.' },
+                    trafficLights: { title: 'Светофоры', desc: 'Монтаж и настройка современных светофорных систем с энергоэффективными технологиями.' },
+                    roadMarking: { title: 'Дорожная разметка', desc: 'Нанесение высококачественной дорожной разметки современными, особо износостойкими материалами.' },
+                    signs: { title: 'Дорожные знаки', desc: 'Изготовление и установка дорожных знаков по стандартам DIN для максимальной видимости.' },
+                    maintenance: { title: 'Техническое обслуживание', desc: 'Регулярное обслуживание и ремонт дорожной инфраструктуры для обеспечения непрерывной функциональности.' },
+                    monitoring: { title: 'Мониторинг и контроль', desc: 'Системы мониторинга состояния дорожной инфраструктуры и контроля безопасности дорожного движения.' },
+                    modernization: { title: 'Модернизация', desc: 'Обновление и модернизация существующих объектов дорожной инфраструктуры новыми технологиями.' }
+                },
+                features: {
+                    title: 'Почему выбирают нас',
+                    experience: { title: 'Опыт', desc: 'Более 15 лет на рынке дорожного строительства' },
+                    quality: { title: 'Качество', desc: 'Строгое соблюдение всех стандартов и норм' },
+                    technologies: { title: 'Современные технологии', desc: 'Использование инновационных решений и материалов' },
+                    team: { title: 'Профессиональная команда', desc: 'Квалифицированные специалисты с многолетним опытом' },
+                    guarantee: { title: 'Гарантия', desc: 'Полная гарантия на все выполненные работы' },
+                    support: { title: 'Поддержка', desc: 'Круглосуточная техническая поддержка' }
+                },
+                gallery: {
+                    title: 'Наша галерея',
+                    empty: 'Пока нет изображений'
+                },
+                news: {
+                    title: 'Новости',
+                    empty: 'Пока нет новостей.',
+                    loadMore: 'Показать еще'
+                },
+                contact: {
+                    title: 'Свяжитесь с нами',
+                    subtitle: 'Есть вопросы? Мы здесь, чтобы помочь!',
+                    name: 'Имя',
+                    phone: 'Телефон',
+                    email: 'Электронная почта',
+                    message: 'Сообщение',
+                    send: 'Отправить',
+                    success: 'Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.'
+                },
+                footer: {
+                    text: 'Безопасность дорожного движения - наша миссия',
+                    copyright: 'Все права защищены.'
+                }
+            }
+        };
+
+        // Language management
+        let currentLanguage = localStorage.getItem('language') || 'de';
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            applyTranslations();
+            updateLanguageUI();
+        }
+
+        function applyTranslations() {
+            const t = translations[currentLanguage];
+            if (!t) return;
+
+            // Navigation
+            const navLinks = document.querySelectorAll('.nav-links a');
+            if (navLinks[0]) navLinks[0].textContent = t.nav.about;
+            if (navLinks[1]) navLinks[1].textContent = t.nav.services;
+            if (navLinks[2]) navLinks[2].textContent = t.nav.features;
+            if (navLinks[3]) navLinks[3].textContent = t.nav.gallery;
+            if (navLinks[4]) navLinks[4].textContent = t.nav.news;
+            if (navLinks[5]) navLinks[5].textContent = t.nav.contact;
+            if (navLinks[6]) navLinks[6].textContent = t.nav.login;
+
+            // Hero
+            const heroSubtitle = document.querySelector('.hero-content p');
+            if (heroSubtitle) heroSubtitle.textContent = t.hero.subtitle;
+            const heroCTA = document.querySelector('.hero-content .cta-button span');
+            if (heroCTA) heroCTA.textContent = t.hero.cta;
+
+            // About
+            const aboutTitle = document.querySelector('#about .section-title');
+            if (aboutTitle) aboutTitle.textContent = t.about.title;
+            const aboutTexts = document.querySelectorAll('#about .about-text p');
+            if (aboutTexts[0]) aboutTexts[0].textContent = t.about.text1;
+            if (aboutTexts[1]) aboutTexts[1].textContent = t.about.text2;
+            const aboutSafety = document.querySelector('#about h3');
+            if (aboutSafety) aboutSafety.textContent = t.about.safety;
+            const aboutQuality = document.querySelector('#about .about-image p');
+            if (aboutQuality) aboutQuality.textContent = t.about.quality;
+
+            // Services
+            const servicesTitle = document.querySelector('#services .section-title');
+            if (servicesTitle) servicesTitle.textContent = t.services.title;
+            const tabButtons = document.querySelectorAll('.tab-button');
+            if (tabButtons[0]) tabButtons[0].textContent = t.services.infrastructure;
+            if (tabButtons[1]) tabButtons[1].textContent = t.services.safety;
+            if (tabButtons[2]) tabButtons[2].textContent = t.services.maintenance;
+
+            // Service cards
+            const serviceCards = document.querySelectorAll('.service-card');
+            if (serviceCards[0]) {
+                serviceCards[0].querySelector('h3').textContent = t.services.roadPlanning.title;
+                serviceCards[0].querySelector('p').textContent = t.services.roadPlanning.desc;
+            }
+            if (serviceCards[1]) {
+                serviceCards[1].querySelector('h3').textContent = t.services.lighting.title;
+                serviceCards[1].querySelector('p').textContent = t.services.lighting.desc;
+            }
+            if (serviceCards[2]) {
+                serviceCards[2].querySelector('h3').textContent = t.services.barriers.title;
+                serviceCards[2].querySelector('p').textContent = t.services.barriers.desc;
+            }
+            if (serviceCards[3]) {
+                serviceCards[3].querySelector('h3').textContent = t.services.trafficLights.title;
+                serviceCards[3].querySelector('p').textContent = t.services.trafficLights.desc;
+            }
+            if (serviceCards[4]) {
+                serviceCards[4].querySelector('h3').textContent = t.services.roadMarking.title;
+                serviceCards[4].querySelector('p').textContent = t.services.roadMarking.desc;
+            }
+            if (serviceCards[5]) {
+                serviceCards[5].querySelector('h3').textContent = t.services.signs.title;
+                serviceCards[5].querySelector('p').textContent = t.services.signs.desc;
+            }
+            if (serviceCards[6]) {
+                serviceCards[6].querySelector('h3').textContent = t.services.maintenance.title;
+                serviceCards[6].querySelector('p').textContent = t.services.maintenance.desc;
+            }
+            if (serviceCards[7]) {
+                serviceCards[7].querySelector('h3').textContent = t.services.monitoring.title;
+                serviceCards[7].querySelector('p').textContent = t.services.monitoring.desc;
+            }
+            if (serviceCards[8]) {
+                serviceCards[8].querySelector('h3').textContent = t.services.modernization.title;
+                serviceCards[8].querySelector('p').textContent = t.services.modernization.desc;
+            }
+
+            // Features
+            const featuresTitle = document.querySelector('#features .section-title');
+            if (featuresTitle) featuresTitle.textContent = t.features.title;
+            const featureItems = document.querySelectorAll('.feature-item');
+            if (featureItems[0]) {
+                featureItems[0].querySelector('h3').textContent = t.features.experience.title;
+                featureItems[0].querySelector('p').textContent = t.features.experience.desc;
+            }
+            if (featureItems[1]) {
+                featureItems[1].querySelector('h3').textContent = t.features.quality.title;
+                featureItems[1].querySelector('p').textContent = t.features.quality.desc;
+            }
+            if (featureItems[2]) {
+                featureItems[2].querySelector('h3').textContent = t.features.technologies.title;
+                featureItems[2].querySelector('p').textContent = t.features.technologies.desc;
+            }
+            if (featureItems[3]) {
+                featureItems[3].querySelector('h3').textContent = t.features.team.title;
+                featureItems[3].querySelector('p').textContent = t.features.team.desc;
+            }
+            if (featureItems[4]) {
+                featureItems[4].querySelector('h3').textContent = t.features.guarantee.title;
+                featureItems[4].querySelector('p').textContent = t.features.guarantee.desc;
+            }
+            if (featureItems[5]) {
+                featureItems[5].querySelector('h3').textContent = t.features.support.title;
+                featureItems[5].querySelector('p').textContent = t.features.support.desc;
+            }
+
+            // Gallery
+            const galleryTitle = document.querySelector('#gallery .section-title');
+            if (galleryTitle) galleryTitle.textContent = t.gallery.title;
+
+            // News
+            const newsTitle = document.querySelector('#news .section-title');
+            if (newsTitle) newsTitle.textContent = t.news.title;
+            const loadMoreBtn = document.getElementById('newsLoadMoreBtn');
+            if (loadMoreBtn) loadMoreBtn.textContent = t.news.loadMore;
+
+            // Contact
+            const contactTitle = document.querySelector('#contact .section-title');
+            if (contactTitle) contactTitle.textContent = t.contact.title;
+            const contactSubtitle = document.querySelector('#contact .contact-subtitle');
+            if (contactSubtitle) contactSubtitle.textContent = t.contact.subtitle;
+            const nameLabel = document.querySelector('label[for="name"]');
+            if (nameLabel) nameLabel.textContent = t.contact.name + ':';
+            const phoneLabel = document.querySelector('label[for="phone"]');
+            if (phoneLabel) phoneLabel.textContent = t.contact.phone + ':';
+            const emailLabel = document.querySelector('label[for="email"]');
+            if (emailLabel) emailLabel.textContent = t.contact.email + ':';
+            const messageLabel = document.querySelector('label[for="message"]');
+            if (messageLabel) messageLabel.textContent = t.contact.message + ':';
+            const sendBtn = document.querySelector('.submit-btn span');
+            if (sendBtn) sendBtn.textContent = t.contact.send;
+
+            // Footer
+            const footerText = document.querySelector('.footer-text');
+            if (footerText) footerText.textContent = t.footer.text;
+        }
+
+        function updateLanguageUI() {
+            const langCodes = { de: 'DE', en: 'EN', ru: 'RU' };
+            const currentLangEl = document.getElementById('currentLang');
+            if (currentLangEl) currentLangEl.textContent = langCodes[currentLanguage] || 'DE';
+
+            document.querySelectorAll('.language-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-lang') === currentLanguage) {
+                    option.classList.add('active');
+                }
+            });
+        }
+
+        // Language switcher functionality
+        const languageBtn = document.getElementById('languageBtn');
+        const languageDropdown = document.getElementById('languageDropdown');
+        const languageOptions = document.querySelectorAll('.language-option');
+
+        if (languageBtn && languageDropdown) {
+            languageBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                languageDropdown.classList.toggle('active');
+            });
+
+            languageOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const lang = option.getAttribute('data-lang');
+                    setLanguage(lang);
+                    languageDropdown.classList.remove('active');
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!languageBtn.contains(e.target) && !languageDropdown.contains(e.target)) {
+                    languageDropdown.classList.remove('active');
+                }
+            });
+        }
+
+        // Initialize language on page load
+        setLanguage(currentLanguage);
+
+        // Listen for language changes in other tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'language') {
+                currentLanguage = e.newValue || 'de';
+                applyTranslations();
+                updateLanguageUI();
+            }
+        });
+    </script>
+</body>
+</html>
