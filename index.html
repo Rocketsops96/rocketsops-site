@@ -65,7 +65,13 @@
         }
 
         [data-theme="dark"] .hero {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
+            /* Same hero image, slightly darker overlay for dark theme */
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url('images/main_image.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         [data-theme="dark"] footer {
@@ -270,8 +276,8 @@
         }
 
         [data-theme="dark"] .theme-toggle .sun {
-            left: calc(100% + 10px);
-            top: 120%;
+            /* Move out horizontally only */
+            left: -35px;
             opacity: 0;
             transform: translateY(-50%) rotate(180deg) scale(0.8);
         }
@@ -279,11 +285,12 @@
         /* Moon animation */
         .theme-toggle .moon {
             position: absolute;
-            top: -20px;
-            right: 5px;
+            top: 50%;
+            /* Start offscreen to the right; slide in horizontally */
+            right: -35px;
             width: 25px;
             height: 25px;
-            transform: translateY(-50%) rotate(-180deg);
+            transform: translateY(-50%) rotate(-180deg) scale(0.8);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
             z-index: 10;
@@ -298,10 +305,9 @@
         }
 
         [data-theme="dark"] .theme-toggle .moon {
-            top: 50%;
             right: 5px;
             opacity: 1;
-            transform: translateY(-50%) rotate(0deg);
+            transform: translateY(-50%) rotate(0deg) scale(1);
         }
 
         @keyframes rotateSun {
@@ -428,7 +434,13 @@
         /* Hero Section */
         .hero {
             height: 100vh;
-            background: linear-gradient(135deg, #DC143C 0%, #B22222 50%, #8B0000 100%);
+            /* Main hero background image behind the VVO text */
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
+                url('images/main_image.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2029,11 +2041,25 @@
         <div class="footer-content">
             <div class="footer-logo">VVO</div>
             <p class="footer-text">Verkehrssicherheit ist unsere Mission</p>
-            <p class="footer-text">&copy; 2024 VVO. Alle Rechte vorbehalten.</p>
+            <p class="footer-text">&copy; 2026 VVO. Alle Rechte vorbehalten.</p>
         </div>
     </footer>
 
     <script>
+        // Statistik: Besuche der Website (für Admin-Statistik)
+        (function () {
+            try {
+                const key = 'siteVisitStats';
+                const today = new Date().toISOString().slice(0, 10);
+                let stats = {};
+                try {
+                    stats = JSON.parse(localStorage.getItem(key) || '{}');
+                } catch (e) {}
+                stats[today] = (stats[today] || 0) + 1;
+                localStorage.setItem(key, JSON.stringify(stats));
+            } catch (e) {}
+        })();
+
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
