@@ -1407,7 +1407,7 @@
                     <div class="upload-icon">📷</div>
                     <div class="upload-text">Ziehen Sie Bilder hierher oder klicken Sie zum Auswählen</div>
                     <input type="file" id="fileInput" class="upload-input" accept="image/*" multiple>
-                    <button type="button" class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    <button type="button" class="upload-btn" id="galleryUploadBtn">
                         Dateien auswählen
                     </button>
                 </div>
@@ -1855,8 +1855,10 @@
 
         // Handle file upload
         async function handleFiles(files) {
+            if (!files || files.length === 0) return;
             const images = JSON.parse(localStorage.getItem('galleryImages') || '[]');
-            
+            const beforeCount = images.length;
+
             for (let file of files) {
                 if (file.type.startsWith('image/')) {
                     try {
@@ -1868,14 +1870,21 @@
                 }
             }
 
-            localStorage.setItem('galleryImages', JSON.stringify(images));
+            if (images.length === beforeCount) {
+                alert('Keine gültigen Bilder ausgewählt oder Fehler beim Lesen.');
+                return;
+            }
+            try {
+                localStorage.setItem('galleryImages', JSON.stringify(images));
+            } catch (err) {
+                console.error(err);
+                alert('Speicher voll oder Fehler beim Speichern. Weniger oder kleinere Bilder wählen.');
+                return;
+            }
             loadGallery();
-            // Trigger custom event for same-tab updates
             window.dispatchEvent(new Event('galleryUpdated'));
             successMessage.classList.add('show');
-            setTimeout(() => {
-                successMessage.classList.remove('show');
-            }, 3000);
+            setTimeout(() => successMessage.classList.remove('show'), 3000);
         }
 
         // Drag and drop
@@ -1894,14 +1903,22 @@
             handleFiles(e.dataTransfer.files);
         });
 
-        // File input change
+        // File input change — nur hier wird nach Auswahl verarbeitet
         fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
+            const list = e.target.files;
+            if (list && list.length > 0) {
+                handleFiles(list);
+            }
             e.target.value = '';
         });
 
-        // Click to upload
-        uploadArea.addEventListener('click', () => {
+        // Click to upload — Button öffnet Dialog einmal; Klick auf Fläche ebenfalls
+        document.getElementById('galleryUploadBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+        uploadArea.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return;
             fileInput.click();
         });
 
